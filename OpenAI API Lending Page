@@ -1,0 +1,38 @@
+ Let's generate HTML using OpenAI API, we will use gpt-4o model
+
+openai_html_output = "<!-- OpenAI generation not run or failed -->"  # Default message
+
+print_markdown("## Calling OpenAI API...")
+try:
+    response = openai_client.chat.completions.create(
+        model = "gpt-4o",  # A capable and fast model suitable for this task
+        messages = [
+            # No system prompt needed here as instructions are in the user prompt
+            {"role": "user", "content": html_prompt}
+        ],
+        temperature = 0.5,  # A bit deterministic for code generation
+    )
+    openai_html_output = response.choices[0].message.content
+
+    # Sometimes OpenAI might wrap the code in markdown fences
+    # Let's try to strip that if present
+    if openai_html_output.strip().startswith("```html"):
+        lines = openai_html_output.strip().splitlines()
+        openai_html_output = "\n".join(lines[1:-1]).strip()
+    else:
+        openai_html_output = openai_html_output.strip()
+
+    # Display the generated HTML code
+    display_html_code("OpenAI (gpt-4o)", openai_html_output)
+
+    # Let's Save the output to a file
+    file_path = "openai_landing_page.html"
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(openai_html_output)
+    print_markdown(f"Successfully saved OpenAI output to `{file_path}`")
+
+
+except Exception as e:
+    print_markdown(f"Error calling OpenAI API: {e}")
+    openai_html_output = f"<!-- Error calling OpenAI API: {e} -->"
