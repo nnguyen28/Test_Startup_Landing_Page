@@ -1,17 +1,14 @@
- Let's generate HTML using OpenAI API, we will use gpt-4o model
-
-openai_html_output = "<!-- OpenAI generation not run or failed -->"  # Default message
+# Let's generate HTML using OpenAI API, we will use gpt-4o model
+# Default message
+openai_html_output = "<!-- OpenAI generation not run or failed -->" 
 
 print_markdown("## Calling OpenAI API...")
 try:
     response = openai_client.chat.completions.create(
         model = "gpt-4o",  # A capable and fast model suitable for this task
-        messages = [
-            # No system prompt needed here as instructions are in the user prompt
-            {"role": "user", "content": html_prompt}
-        ],
-        temperature = 0.5,  # A bit deterministic for code generation
-    )
+        messages = [{"role": "user", "content": html_prompt}], # No system prompt needed here as instructions are in the user prompt
+        temperature = 0.5,)  # A bit deterministic for code generation
+  
     openai_html_output = response.choices[0].message.content
 
     # Sometimes OpenAI might wrap the code in markdown fences
